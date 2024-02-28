@@ -1,6 +1,6 @@
-﻿namespace RazorShop.Server.Services.Product;
-
+﻿
 public interface IProductService
 {
-    Task<ServiceResponse<List<Shared.Product>>> GetProductsAsync();
+    Task<ServiceResponse<List<Product>>> GetProductsAsync();
+    Task<ServiceResponse<Product>> GetProductAsync(int productId);
 }

@@ -18,4 +18,10 @@ public class ProductService : IProductService
         if (result != null && result.Data != null)
         Products = result.Data;
     }
+
+    public async Task<ServiceResponse<Product>> GetProductAsync(int productId)
+    {
+        var result = await _http.GetFromJsonAsync<ServiceResponse<Product>>($"api/Product/{productId}");
+        return result;
+    }
 }
