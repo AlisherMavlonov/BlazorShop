@@ -1,4 +1,9 @@
-﻿<div class="dropdown">
+﻿@using Microsoft.AspNetCore.WebUtilities
+@inject ILocalStorageService LocalStorage
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject NavigationManager NavigationManager
+
+<div class="dropdown">
     <button
         @onclick="ToggleUserMenu"
         @onfocusout="HideUserMenu"
@@ -6,8 +11,20 @@
         <i class="oi oi-person"></i>
     </button>
     <div class="dropdown-menu dropdown-menu-right @UserMenuCssClass">
-        <a href="login" class="dropdown-item">Login</a>
-        <a href="register" class="dropdown-item">Register</a>
+        <AuthorizeView>
+            <Authorized>
+                <a href="profile" class="dropdown-item">Profile</a>
+                <hr/>
+                <button class="dropdown-item" @onclick="Logout">Logout</button>    
+            </Authorized>
+
+            <NotAuthorized>
+                <a href="login?returnUrl=@NavigationManager.ToBaseRelativePath(NavigationManager.Uri)" class="dropdown-item">Login</a>
+                <a href="register" class="dropdown-item">Register</a>
+            </NotAuthorized>
+        
+        </AuthorizeView>
+        
     </div>
 </div>
 @code {
@@ -15,6 +32,17 @@
     private bool showUserMenu = false;
 
     private string UserMenuCssClass => showUserMenu ? "show-menu" : null;
+
+    private string returnUrl = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("returnUrl", out var url))
+        {
+            returnUrl = url;
+        }
+    }
 
     private void ToggleUserMenu()
     {
@@ -27,4 +55,11 @@
         showUserMenu = false;
     }
 
+    private async Task Logout()
+    {
+        await LocalStorage.RemoveItemAsync("authToken");
+        await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        NavigationManager.NavigateTo(returnUrl);
+        
+    }
 }

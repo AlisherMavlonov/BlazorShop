@@ -18,6 +18,14 @@ public class AuthService : IAuthService
 
         return await result.Content.ReadFromJsonAsync<ServiceResponse<string>>();
     }
+
+    public async Task<ServiceResponse<bool>> ChangePassword(UserChangePassword request)
+    {
+        var result = await _http.PostAsJsonAsync("api/auth/change-password", request.Password);
+
+        return await result.Content.ReadFromJsonAsync<ServiceResponse<bool>>();
+    }
+
     public async Task<ServiceResponse<int>> Register(UserRegistor request)
     {
         var result = await _http.PostAsJsonAsync("api/auth/register", request);
