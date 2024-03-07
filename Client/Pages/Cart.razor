@@ -1,6 +1,7 @@
 ﻿@page "/cart"
 @inject ICartService CartService
 @inject IOrderService OrderService
+@inject IAuthService AuthService
 @inject NavigationManager NavigationManager
 
 <PageTitle>Shopping Cart</PageTitle>
@@ -22,11 +23,11 @@ else
                     <h5><a href="/product/@product.ProductId">@product.Title</a></h5>
                     <span>@product.ProductType</span><br/>
                     <input type="number" value="@product.Quantity"
-                    @onchange="@((ChangeEventArgs e)=> UpdateQuantity(e,product))"
-                    class = "from-control input-quantity"
-                    min="1"/>
+                           @onchange="@((ChangeEventArgs e)=> UpdateQuantity(e,product))"
+                           class = "from-control input-quantity"
+                           min="1"/>
                     <button class="btn-delete" @onclick="@(() => 
-                        RemoveProductFromCart(product.ProductId, product.ProductTypeId))">
+                                                             RemoveProductFromCart(product.ProductId, product.ProductTypeId))">
                         Delete
                     </button>
                 </div>
@@ -38,6 +39,14 @@ else
         </div>        
         
     </div>
+    @if (isAuthenticated)
+    {
+        <div>
+            <h5>Delivery Address</h5>
+            <AddressForm />
+        </div>  
+        
+    }
     <button @onclick="PlaceOrder" class="btn alert-success float-end mt-1">Checkout</button>
 }
 
@@ -46,9 +55,11 @@ else
 
     List<CartProductResponse> cartProducts = null;
     string message = "Loading cart...";
+    bool isAuthenticated = false;
 
     protected override async Task OnInitializedAsync()
     {
+        isAuthenticated = await AuthService.IsUserAuthenticated();
         await LoadCart();
     }
 

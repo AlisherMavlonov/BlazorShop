@@ -77,10 +77,14 @@ public class CartService : ICartService
         return new ServiceResponse<int>() { Data = count };
     }
 
-    public async Task<ServiceResponse<List<CartProductResponse>>> GetDbCartProducts()
+    public async Task<ServiceResponse<List<CartProductResponse>>> GetDbCartProducts(int? userId = null)
     {
+        if (userId == null)
+        {
+            userId = _authService.GetUserId();
+        }
         return await GetCartProducts(await _context.CartItems
-            .Where(c => c.UserId == _authService.GetUserId()).ToListAsync());
+            .Where(c => c.UserId == userId).ToListAsync());
 
 
     }

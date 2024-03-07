@@ -7,5 +7,6 @@ public class User
     public byte[] PasswordHash { get; set; }
     public byte[] PasswordSalt { get; set; }
     public DateTime DataCreate { get; set; } = DateTime.UtcNow;
+    public Address Address { get; set; }
 
 }
