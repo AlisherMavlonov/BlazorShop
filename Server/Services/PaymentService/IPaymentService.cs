@@ -5,5 +5,5 @@ namespace RazorShop.Server.Services.PaymentService;
 public interface IPaymentService
 {
     Task<Session> CreateCheckoutSession();
-    Task<ServiceResponse<bool>> FulFillOrder(HttpRequest request);
+    Task<ServiceResponse<bool>> FulfillOrder(HttpRequest request);
 }

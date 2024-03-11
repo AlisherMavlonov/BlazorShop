@@ -69,12 +69,12 @@ public class AuthService : IAuthService
             .FirstOrDefaultAsync(x => x.Email.ToLower().Equals(email.ToLower()));
         if (user == null)
         {
-            response.Seccess = false;
+            response.Success = false;
             response.Message = "User not found.";
         }
         else if (!VerifyPasswordHash(password,user.PasswordHash,user.PasswordSalt))
         {
-            response.Seccess = false;
+            response.Success = false;
             response.Message = "Wrong password.";
         }
         else
@@ -91,7 +91,7 @@ public class AuthService : IAuthService
         {
             return new ServiceResponse<bool>
             {
-                Seccess = false,
+                Success = false,
                 Message = "User not found."
             };
         }
@@ -104,7 +104,7 @@ public class AuthService : IAuthService
         return new ServiceResponse<bool>()
         {
             Data = true,
-            Seccess = true,
+            Success = true,
             Message = "Password has been changed."
         };
     }
@@ -135,7 +135,8 @@ public class AuthService : IAuthService
         List<Claim> claims = new List<Claim>()
         {
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Email)
+            new Claim(ClaimTypes.Name, user.Email),
+            new Claim(ClaimTypes.Role, user.Role)
         };
 
         var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8

@@ -25,7 +25,7 @@ public class AuthController : ControllerBase
                 Email = request.Email
             }, 
             request.Password);
-        if (!response.Seccess)
+        if (!response.Success)
         {
             return BadRequest(response);
         }
@@ -37,7 +37,7 @@ public class AuthController : ControllerBase
     public async Task<ActionResult<ServiceResponse<string>>> Login(UserLogin request)
     {
         var response = await _authService.Login(request.Email, request.Password);
-        if (!response.Seccess)
+        if (!response.Success)
         {
             return BadRequest(response);
         }
@@ -51,7 +51,7 @@ public class AuthController : ControllerBase
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var response = await _authService.ChangePassword(int.Parse(userId), newPassword);
 
-        if (!response.Seccess)
+        if (!response.Success)
         {
             return BadRequest(response);
         }

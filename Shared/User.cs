@@ -8,5 +8,6 @@ public class User
     public byte[] PasswordSalt { get; set; }
     public DateTime DataCreate { get; set; } = DateTime.UtcNow;
     public Address Address { get; set; }
+    public string Role { get; set; } = "Customer";
 
 }

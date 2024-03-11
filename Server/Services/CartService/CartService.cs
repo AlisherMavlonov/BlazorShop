@@ -31,7 +31,7 @@ public class CartService : ICartService
             }
 
             var productVariant = await _context.ProductVariants
-                .Where(p => p.ProductId == item.ProductTypeId
+                .Where(p => p.ProductId == item.ProductId
                             && p.ProductTypeId == item.ProductTypeId)
                 .Include(p => p.ProductType)
                 .FirstOrDefaultAsync();
@@ -83,9 +83,12 @@ public class CartService : ICartService
         {
             userId = _authService.GetUserId();
         }
-        return await GetCartProducts(await _context.CartItems
-            .Where(c => c.UserId == userId).ToListAsync());
 
+        var s = await _context.CartItems
+            .Where(c => c.UserId == userId).ToListAsync();
+        var result = await GetCartProducts(s);
+
+        return result;
 
     }
 
@@ -121,7 +124,7 @@ public class CartService : ICartService
             return new ServiceResponse<bool>
             {
                 Data = false,
-                Seccess = false,
+                Success = false,
                 Message = "Cart item does not exist."
 
             };
@@ -144,7 +147,7 @@ public class CartService : ICartService
             return new ServiceResponse<bool>
             {
                 Data = false,
-                Seccess = false,
+                Success = false,
                 Message = "Cart item does not exist."
 
             };

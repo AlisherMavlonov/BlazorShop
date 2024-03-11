@@ -34,7 +34,7 @@ public class OrderService : IOrderService
         var order = new Order()
         {
             UserId = userId,
-            OrderDate = DateTime.Now,
+            OrderDate = DateTime.UtcNow,
             TotalPrice = totalPrice,
             OrderItems = orderItems
         };
@@ -89,7 +89,7 @@ public class OrderService : IOrderService
 
         if (order == null)
         {
-            response.Seccess = false;
+            response.Success = false;
             response.Message = "Order not found.";
             return response;
         }

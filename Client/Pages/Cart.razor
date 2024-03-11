@@ -5,7 +5,9 @@
 @inject NavigationManager NavigationManager
 
 <PageTitle>Shopping Cart</PageTitle>
-<h3>Shoping Cart</h3>
+
+<h3>Shopping Cart</h3>
+
 @if (cartProducts == null || cartProducts.Count == 0)
 {
     <span>@message</span>
@@ -21,38 +23,36 @@ else
                 </div>
                 <div class="name">
                     <h5><a href="/product/@product.ProductId">@product.Title</a></h5>
-                    <span>@product.ProductType</span><br/>
+                    <span>@product.ProductType</span><br />
                     <input type="number" value="@product.Quantity"
-                           @onchange="@((ChangeEventArgs e)=> UpdateQuantity(e,product))"
-                           class = "from-control input-quantity"
-                           min="1"/>
-                    <button class="btn-delete" @onclick="@(() => 
-                                                             RemoveProductFromCart(product.ProductId, product.ProductTypeId))">
+                   @onchange="@((ChangeEventArgs e) => UpdateQuantity(e, product))"
+                   class="form-control input-quantity"
+                   min="1" />
+                    <button class="btn-delete" @onclick="@(() =>
+                        RemoveProductFromCart(product.ProductId, product.ProductTypeId))">
                         Delete
                     </button>
                 </div>
-                <div class="cart-product-price">$@(product.Price*product.Quantity)</div>
+                <div class="cart-product-price">$@(product.Price * product.Quantity)</div>
             </div>
         }
         <div class="cart-product-price">
-            Total (@cartProducts.Count) : $@cartProducts.Sum(product=> @product.Price*product.Quantity)
-        </div>        
-        
+            Total (@cartProducts.Count): $@cartProducts.Sum(product => @product.Price * product.Quantity)
+        </div>
     </div>
     @if (isAuthenticated)
     {
         <div>
             <h5>Delivery Address</h5>
             <AddressForm />
-        </div>  
-        
+        </div>
     }
     <button @onclick="PlaceOrder" class="btn alert-success float-end mt-1">Checkout</button>
 }
 
 
-@code {
 
+@code {
     List<CartProductResponse> cartProducts = null;
     string message = "Loading cart...";
     bool isAuthenticated = false;
@@ -63,30 +63,27 @@ else
         await LoadCart();
     }
 
-    private async Task LoadCart()
-    {
-        await CartService.GetCartItemsCount();
-        cartProducts = await CartService.GetCartProducts();
-
-        if (cartProducts == null || cartProducts.Count == 0)
-        {
-            message = "Your cart is empty";
-        }
-    }
-
     private async Task RemoveProductFromCart(int productId, int productTypeId)
     {
         await CartService.RemoveProductFromCart(productId, productTypeId);
         await LoadCart();
     }
 
+    private async Task LoadCart()
+    {
+        await CartService.GetCartItemsCount();
+        cartProducts = await CartService.GetCartProducts();
+        if (cartProducts == null || cartProducts.Count == 0)
+        {
+            message = "Your cart is empty.";
+        }
+    }
+
     private async Task UpdateQuantity(ChangeEventArgs e, CartProductResponse product)
     {
-        product.Quantity =int.Parse(e.Value.ToString());
+        product.Quantity = int.Parse(e.Value.ToString());
         if (product.Quantity < 1)
-        {
             product.Quantity = 1;
-        }
         await CartService.UpdateQuantity(product);
     }
 
@@ -95,5 +92,4 @@ else
         string url = await OrderService.PlaceOrder();
         NavigationManager.NavigateTo(url);
     }
-
 }
